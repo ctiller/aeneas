@@ -1,8 +1,11 @@
 import Aeneas
 open Aeneas Std Result
 
+-- Lean v4.33/v4.34: `grind` can emit an ill-typed proof (`eq_false_of_decide (eagerReduce
+-- (Eq.refl false))`, claiming `decide (0 = 0) = false`) for some of the bounds below, which the
+-- kernel rejects. Use `scalar_tac` for array bounds until `grind` is fixed upstream.
 local macro_rules
-| `(tactic| get_elem_tactic) => `(tactic| grind)
+| `(tactic| get_elem_tactic) => `(tactic| scalar_tac)
 
 set_option maxHeartbeats 1000000
 

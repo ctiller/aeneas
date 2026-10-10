@@ -2,8 +2,11 @@ import Aeneas
 import Tutorial.Tutorial
 open Aeneas Std Result
 
+-- Lean v4.33/v4.34: `grind` can emit an ill-typed proof (`eq_false_of_decide (eagerReduce
+-- (Eq.refl false))`, claiming `decide (0 = 0) = false`) for some of the bounds below, which the
+-- kernel rejects. Use `scalar_tac` for array bounds until `grind` is fixed upstream.
 local macro_rules
-| `(tactic| get_elem_tactic) => `(tactic| grind)
+| `(tactic| get_elem_tactic) => `(tactic| scalar_tac)
 
 set_option maxHeartbeats 1000000
 
@@ -135,8 +138,13 @@ theorem list_nth_mut1_spec'' {T: Type} [Inhabited T] (l : CList T) (i : U32)
   unfold list_nth_mut1 list_nth_mut1_loop
   /- `step*` repeatedly applies `step`, while doing a case disjunction whenever it
       encounters a branching. Note that one can automatically generate the corresponding
-      proof script by using `step*?`. -/
-  step*
+      proof script by using `step*?`.
+
+      We pass `threadGrindState := false` to sidestep an upstream `grind` bug (Lean v4.33 and
+      v4.34): with the threaded grind e-graph, `grind` closes the `i = 0` base case with an
+      ill-typed proof (`eq_false_of_decide (eagerReduce (Eq.refl false))`) that the kernel
+      rejects. A fresh `grind` per step is unaffected. Drop the option once `grind` is fixed. -/
+  step* (threadGrindState := false)
   simp
   simp_lists [*]
 
