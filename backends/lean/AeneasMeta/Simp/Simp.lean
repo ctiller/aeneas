@@ -115,10 +115,10 @@ where
   go (fvarIdsToSimp : Array FVarId) (simplifyTarget : Bool) : TacticM (Option (Array FVarId) × Simp.Stats) := do
     let mvarId ← getMainGoal
     let (result?, stats) ← simpGoal mvarId ctx (simprocs := simprocs) (simplifyTarget := simplifyTarget) (discharge? := discharge?) (fvarIdsToSimp := fvarIdsToSimp)
-    let freshFVarIds ←
+    let freshFVarIds : Option (Array FVarId) ←
       match result? with
       | none => replaceMainGoal []; pure none
-      | some (fvars, mvarId) => replaceMainGoal [mvarId]; pure fvars
+      | some (fvars, mvarId) => replaceMainGoal [mvarId]; pure (some fvars)
     /- We need to filter the `fvarIdsToSimp` to remove those which have been replaced with fresh fvars -/
     let fvars ← do
       match freshFVarIds with
