@@ -10,7 +10,8 @@ namespace Aeneas.BvTac
 open Lean Lean.Meta Lean.Parser.Tactic Lean.Elab.Tactic
 open Bvify Utils
 
-structure Config extends Lean.Elab.Tactic.BVDecide.Frontend.BVDecideConfig, Bvify.Config where
+-- Lean v4.34: `BVDecideConfig` moved from `Lean.Elab.Tactic.BVDecide.Frontend` to `Lean.Elab.Tactic.BVDecide`
+structure Config extends Lean.Elab.Tactic.BVDecide.BVDecideConfig, Bvify.Config where
 
 meta section
 declare_config_elab elabConfig Config
@@ -84,7 +85,7 @@ meta partial def bvTacPreprocess (config : Config) (n : Option Expr): TacticM Un
 elab "bv_tac_preprocess" config:Parser.Tactic.optConfig n:(colGt term)? : tactic => do
   bvTacPreprocess (← elabConfig config) (← optElabTerm n)
 
-open Lean.Elab.Tactic.BVDecide.Frontend Lean.Elab in
+open Lean.Meta.Tactic.BVDecide Lean.Elab in
 /-- `bv_tac n` solves goals about bit-vectors.
 
 **Usage**: `bv_tac n` where `n` is the bitwidth to use for the bit-vectors.
@@ -101,8 +102,10 @@ be lifted, one can try lifting them manually - see the documentation of `bvify` 
 and tricks.
 
 **Debugging**:
-Calling `bv_tac n` is (roughly) equivalent to: `bv_tac_preprocess n; bv_decide`,
-which is itself roughly equivalent to: `bvify n at *; simp_all only; bv_decide`.
+Calling `bv_tac n` is (roughly) equivalent to: `bv_tac_preprocess n; bv_lit_widths; bv_decide`,
+which is itself roughly equivalent to: `bvify n at *; simp_all only; bv_lit_widths; bv_decide`.
+(`bv_lit_widths` makes the bit-widths of the atoms `x.bv` literal, which `bv_decide` requires
+since Lean v4.34.)
 
 Note that it often happens that `bv_tac` fails because `bvify` could not
 lift some assumptions to the subset `bv_decide` can reason about. For this
@@ -123,9 +126,13 @@ elab "bv_tac" config:Parser.Tactic.optConfig n:(colGt term)? : tactic =>
   -- Call bv_decide
   IO.FS.withTempFile fun _ lratFile => do
     let config := config.toBVDecideConfig
-    let cfg ← BVDecide.Frontend.TacticContext.new lratFile config
+    let cfg ← TacticContext.new lratFile config
     liftMetaFinishingTactic fun g => do
-      discard <| bvDecide g cfg
+      -- Since Lean v4.34 `bv_decide` only understands literal bit-widths
+      let g ← BvLitWidths.bvLitWidths g
+      -- Lean v4.34: `bvDecide` takes a `Normalize.Target` and runs in `GrindM`
+      let params ← Grind.mkDefaultParams {}
+      discard <| Grind.GrindM.run (params := params) <| bvDecide (.mvarIdTarget g) cfg
 
 /-!
 # Tests

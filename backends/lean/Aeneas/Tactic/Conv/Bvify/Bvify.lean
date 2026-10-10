@@ -1,5 +1,6 @@
 module
 public import Aeneas.Tactic.Conv.Bvify.Init
+public import Aeneas.Tactic.Conv.Bvify.LitWidths
 public import Aeneas.Tactic.Solver.Arith.Lemmas
 public import Aeneas.Std.Scalar
 public import Aeneas.Std.PrimitivesLemmas
@@ -453,6 +454,7 @@ example
   (c.val : ZMod 32) = (a.val : ZMod 32) + (b.val : ZMod 32) := by
   bvify 32 at *
   extract_goal1
+  bv_lit_widths
   bv_decide
 
 example
@@ -476,6 +478,7 @@ example
   := by
   bvify 32 at *
   simp_all only
+  bv_lit_widths
   bv_decide
 
 example
@@ -497,6 +500,7 @@ example
   := by
   bvify 32 at *
   simp_all only
+  bv_lit_widths
   bv_decide
 
 example
@@ -536,6 +540,6 @@ example (x a b : U32) (h : x.val = a.val + b.val) : (x.val : ZMod 3329) = (a.val
   simp [h]
 
 example (byte : U8) : 8 ∣ (byte &&& 16#u8).val := by
-  bvify 8; bv_decide
+  bvify 8; bv_lit_widths; bv_decide
 
 end Aeneas.Bvify
