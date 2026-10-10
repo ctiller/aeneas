@@ -83,9 +83,11 @@ simproc reduceZModInv (@Inv.inv _ (ZMod.instInv _) _) := fun e => do
 simproc reduceZModPow
   (@HPow.hPow _ Nat _
       (@instHPow _ Nat
-        (@Monoid.toPow _
-          (@MonoidWithZero.toMonoid _
-            (@Semiring.toMonoidWithZero _
+        -- Mathlib v4.34: `Monoid.toPow` became `NPow.toPow ∘ Monoid.toNPow`, and
+        -- the monoid of a semiring is now reached through `Semiring.toMonoid`.
+        (@NPow.toPow _
+          (@Monoid.toNPow _
+            (@Semiring.toMonoid _
               (@CommSemiring.toSemiring _ (@CommRing.toCommSemiring _ (ZMod.commRing _)))))))
       _ _) := fun e => do
   trace[ReduceZMod] "Visiting: {e}"

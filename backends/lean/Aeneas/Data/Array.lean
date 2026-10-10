@@ -110,13 +110,9 @@ theorem getElem_set! {α : Type u}
   simp only [set!_eq_setIfInBounds, ← getElem_toList, toList_setIfInBounds]
   simp_lists
 
-@[simp, simp_lists_safe]
-theorem getElem!_set!_ne {α : Type u}
-  [Inhabited α] {i j : ℕ} {x : α} {xs : Array α}
-  (h : i ≠ j) :
-  (xs.set! i x)[j]! = xs[j]! := by
-  simp only [set!_eq_setIfInBounds, ← getElem!_toList, toList_setIfInBounds]
-  simp_lists
+-- `Array.getElem!_set!_ne` is provided by the Lean core library since v4.33 (same statement,
+-- with explicit arguments); we only register it with Aeneas' simp sets.
+attribute [simp, simp_lists_safe] getElem!_set!_ne
 
 @[simp, simp_lists_safe]
 theorem getElem_set!_ne {α : Type u}

@@ -849,11 +849,12 @@ meta def tryApply (info : SpecInfo) (lifting : Option LiftingInfo) (args : Args)
     | some th => do
       trace[Step] "Lookuped up {kind}: {th}"
       -- Apply the theorem
-      let res ← do
-        try
-          let res ← stepWith info lifting args isLet fExpr th
-          pure (some res)
-        catch _ => pure none
+      -- (Lean v4.34's `do` elaborator no longer accepts a trailing `let res ← do ...`
+      -- as the last element of the block: return the `try` directly.)
+      try
+        let res ← stepWith info lifting args isLet fExpr th
+        pure (some res)
+      catch _ => pure none
   match res with
   | some res => pure (some res)
   | none => pure none

@@ -110,8 +110,11 @@ theorem getElem!_set! {α : Type u}
     ← Array.getElem!_toList, Array.toList_setIfInBounds]
   simp_lists
 
+-- Lean v4.33+ core declares `Vector.getElem_set!` and `Vector.getElem_set!_ne` with different
+-- hypotheses (`if i = j then ...`, resp. separate `j < n`/`i ≠ j`); we keep the Aeneas variants
+-- (whose conjunctive hypotheses suit `simp_lists`) under non-clashing names.
 @[simp, simp_lists_safe]
-theorem getElem_set! {α : Type u}
+theorem getElem_set!_of_eq {α : Type u}
   [Inhabited α] {n i j : ℕ} {x : α} {xs : Vector α n}
   (hi : i < n ∧ j = i) :
   (xs.set! i x)[j] = x := by
@@ -130,7 +133,7 @@ theorem getElem!_set!_ne {α : Type u}
   simp_lists
 
 @[simp, simp_lists_safe]
-theorem getElem_set!_ne {α : Type u}
+theorem getElem_set!_ne_of_lt {α : Type u}
   [Inhabited α] {n i j : ℕ} {x : α} {xs : Vector α n}
   (h : i ≠ j ∧ j < n) :
   (xs.set! i x)[j] = xs[j] := by

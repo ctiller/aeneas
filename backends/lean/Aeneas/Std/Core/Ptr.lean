@@ -73,7 +73,9 @@ inductive core.ptr.alignment.AlignmentEnum where
 | _Align1Shl62 : core.ptr.alignment.AlignmentEnum
 | _Align1Shl63 : core.ptr.alignment.AlignmentEnum
 
-@[reducible, rust_type "core::ptr::alignment::Alignment"]
+-- `@[expose]`: since Lean v4.34 the compiler requires the body of a reducible type alias
+-- that appears in a compiled structure to be visible to importing modules.
+@[expose, reducible, rust_type "core::ptr::alignment::Alignment"]
 def core.ptr.alignment.Alignment :=
 core.ptr.alignment.AlignmentEnum
 
