@@ -45,9 +45,14 @@ theorem Slice.from_val {α} (l : List α) (h : l.length ≤ Usize.max)
 theorem Slice.val_from {α} (s : Slice α) h
   : Slice.from s.val h = s := by
   cases s
-  simp [val, Slice.from] at *
-  simp [ListN_length]
-  apply ListN.to_from_inverse
+  -- Lean v4.34: after `simp ... at *` the goal still mentions the old `h`, so it is not
+  -- type-correct at `.implicit` transparency and `simp [ListN_length]` makes no progress.
+  -- Prove the two field equalities directly instead.
+  simp only [val, Slice.from]
+  congr 1
+  · apply ListN_length
+  · apply ListN.to_from_inverse
+  · apply proof_irrel_heq
 
 theorem Slice.eq_iff {α} (s0 s1 : Slice α) : s0 = s1 ↔ s0.val = s1.val := by
   constructor

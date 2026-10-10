@@ -38,6 +38,9 @@ def DWLP (θ : EffectWP E) [θ.Monotonic] (m : ITree E α) (Q : θ.Post α) : θ
 /-- Unfolding of `DWLP` into its impredicative definition. -/
 theorem DWLP.def :
     DWLP θ m Q s ↔ ∃ X : ITreePred θ α, X ≤ FunctionalWP True θ Q X ∧ X m s := by
+  -- Unfolding `OrderHom.lfp`/`gfp` exposes `Monotone`, which Lean v4.34 no longer unfolds when
+  -- checking metavariable types (`.implicit` transparency); restore the v4.31 behaviour here.
+  set_option backward.isDefEq.respectTransparency.types false in
   simp [DWLP, OrderHom.gfp, FunctionalWP.hom, entails_iff_le]
 
 /-- DWLP is the greatest fixpoint -/

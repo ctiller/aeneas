@@ -18,16 +18,25 @@ open Std Result
 open Aeneas.Data.Coinductive
 open Lean.Order
 
-@[expose] def Post α := (α -> Prop)
-@[expose] def Pre := Prop
+/- `implicit_reducible`: Lean v4.34 checks implicit arguments and metavariable types at
+   `.implicit` transparency, so these type synonyms must unfold there (as they did at
+   `.default` transparency in v4.31) for lemmas such as `spec_ok` to apply to posts like
+   `uncurry f : α × β → Prop`. -/
+@[expose, implicit_reducible] def Post α := (α -> Prop)
+@[expose, implicit_reducible] def Pre := Prop
 
-@[expose] def Wp α := Post α → Pre
+@[expose, implicit_reducible] def Wp α := Post α → Pre
 
 @[expose] def wp_return (x:α) : Wp α := fun p => p x
 
 section ResultImplementation
 
 unseal Result
+-- Lean v4.34 checks metavariable types at `.implicit` transparency
+-- (`backward.isDefEq.respectTransparency.types`), so `Result α` must be
+-- `implicit_reducible` (not just semireducible) for simp/rw lemmas stated on
+-- `ITree RustEffect α` to apply to `Result α` in the files that unseal it.
+attribute [local implicit_reducible] Result
 
 @[expose] section
 

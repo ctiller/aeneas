@@ -51,10 +51,15 @@ open Error
 inductive RustEffect.Input : Type where
 | fail : Error → RustEffect.Input
 
+@[implicit_reducible] -- see the comment on `RustEffect` below
 def RustEffect.Output (i : RustEffect.Input) : Type :=
   match i with
   | .fail _ => PEmpty
 
+-- `implicit_reducible` so that `RustEffect.I`/`RustEffect.O` reduce to `RustEffect.Input`/
+-- `RustEffect.Output` when Lean v4.34 checks implicit arguments and metavariable types at
+-- `.implicit` transparency (e.g. when rewriting with `ITree.cases.vis` on a `Result`).
+@[implicit_reducible]
 def RustEffect : Effect := {
   I := RustEffect.Input
   O := RustEffect.Output
@@ -65,6 +70,11 @@ def RustEffect : Effect := {
 @[irreducible]
 def Result (α : Type u) : Type u := ITree RustEffect α
 unseal Result
+-- Lean v4.34 checks metavariable types at `.implicit` transparency
+-- (`backward.isDefEq.respectTransparency.types`), so `Result α` must be
+-- `implicit_reducible` (not just semireducible) for simp/rw lemmas stated on
+-- `ITree RustEffect α` to apply to `Result α` in the files that unseal it.
+attribute [local implicit_reducible] Result
 
 def Result.ok {α} (a : α) : Result α := .ret a
 
@@ -321,6 +331,11 @@ theorem pure_tc_eq {α : Type u} (x : α) : (pure x : Result α) = .ok x := rfl
 end
 
 unseal Result
+-- Lean v4.34 checks metavariable types at `.implicit` transparency
+-- (`backward.isDefEq.respectTransparency.types`), so `Result α` must be
+-- `implicit_reducible` (not just semireducible) for simp/rw lemmas stated on
+-- `ITree RustEffect α` to apply to `Result α` in the files that unseal it.
+attribute [local implicit_reducible] Result
 open Result
 
 /-!

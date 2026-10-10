@@ -13,11 +13,15 @@ open Std Result WP Data Coinductive Effect Lean.Order
 
 namespace Aeneas.Tactic.Step.Tests.Coin
 
+-- `implicit_reducible`: Lean v4.34 checks implicit arguments at `.implicit` transparency, so the
+-- effect and `ITreeC` must unfold there for `ITree` lemmas to apply (cf. `RustEffect`).
+@[implicit_reducible]
 def CoinEffect : Effect := {
    I := Unit
    O := fun _ => Bool
 }
 
+@[implicit_reducible]
 def ITreeC := ITree CoinEffect
 
 -- can just use coinductive props!
