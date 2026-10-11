@@ -130,7 +130,8 @@ meta def generateReadDiscriminantCmds (declName : Name) (ty : ScalarTy) (discrVa
   -- Generate the syntax for the instance
   let binders := binders.extract 0 indVal.numParams
   let args := header.argNames.map mkIdent
-  let instStx ← `(@[expose] public instance $binders:bracketedBinder* :
+  let instName := Name.mkStr ((Name.mkStr .anonymous "_root_") ++ declName) "instDiscriminant"
+  let instStx ← `(@[expose] public instance $(mkIdent instName):ident $binders:bracketedBinder* :
       Aeneas.Std.Discriminant ($header.targetType) ($ty) where
       read_discriminant := @$(mkIdent auxFunName):ident $args*)
 
