@@ -168,19 +168,19 @@ def copy_int (x : Std.I32) : Result Std.I32 := do
     Source: 'tests/src/no_nested_borrows.rs', lines 140:0-144:1
     Visibility: public -/
 def test_unreachable (b : Bool) : Result Unit := do
-  massert (¬ b)
+  massert (! b)
 
 /-- [no_nested_borrows::test_panic]:
     Source: 'tests/src/no_nested_borrows.rs', lines 147:0-151:1
     Visibility: public -/
 def test_panic (b : Bool) : Result Unit := do
-  massert (¬ b)
+  massert (! b)
 
 /-- [no_nested_borrows::test_panic_msg]:
     Source: 'tests/src/no_nested_borrows.rs', lines 155:0-159:1
     Visibility: public -/
 def test_panic_msg (b : Bool) : Result Unit := do
-  massert (¬ b)
+  massert (! b)
 
 /-- [no_nested_borrows::test_copy_int]:
     Source: 'tests/src/no_nested_borrows.rs', lines 163:0-168:1
@@ -594,7 +594,7 @@ def create_id_type {T : Type} (x : T) : Result (IdType T) := do
     Source: 'tests/src/no_nested_borrows.rs', lines 523:0-525:1
     Visibility: public -/
 def not_bool (x : Bool) : Result Bool := do
-  ok (¬ x)
+  ok (! x)
 
 /-- [no_nested_borrows::not_u32]:
     Source: 'tests/src/no_nested_borrows.rs', lines 527:0-529:1

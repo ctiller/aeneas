@@ -928,7 +928,13 @@ let unop_name (unop : unop) : string =
           | Some int_ty -> int_name int_ty ^ "_not")
       | Lean -> begin
           match ty with
-          | None -> "¬"
+          (* Boolean negation: [!b] (i.e., [not b]) is a [Bool] whatever the
+             context, while [¬ b] is a [Prop] which only becomes a [Bool]
+             (through [decide]) when the expected type is known. Without an
+             expected type (e.g., [let x ← if c then ok false else ok (¬ b)])
+             Lean may type [x] as a [Prop], and then fail to synthesize
+             [Decidable x] when [x] is used as a condition. *)
+          | None -> "!"
           | Some _ -> "~~~"
         end
       | Coq -> if Option.is_none ty then "negb" else "scalar_not"

@@ -53,43 +53,43 @@ def assert_and (b0 : Bool) (b1 : Bool) : Result Unit := do
     Source: 'tests/src/assert-cfg.rs', lines 25:0-28:1
     Visibility: public -/
 def assert_not_or (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert (¬ b0)
-  massert (¬ b1)
+  massert (! b0)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_not_and]:
     Source: 'tests/src/assert-cfg.rs', lines 30:0-33:1
     Visibility: public -/
 def assert_not_and (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert ((¬ b0) || (¬ b1))
+  massert ((! b0) || (! b1))
   f
 
 /-- [assert_cfg::assert_not_b0_or_b1]:
     Source: 'tests/src/assert-cfg.rs', lines 35:0-38:1
     Visibility: public -/
 def assert_not_b0_or_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert ((¬ b0) || b1)
+  massert ((! b0) || b1)
   f
 
 /-- [assert_cfg::assert_b0_or_not_b1]:
     Source: 'tests/src/assert-cfg.rs', lines 40:0-43:1
     Visibility: public -/
 def assert_b0_or_not_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert (b0 || (¬ b1))
+  massert (b0 || (! b1))
   f
 
 /-- [assert_cfg::assert_not_b0_or_not_b1]:
     Source: 'tests/src/assert-cfg.rs', lines 45:0-48:1
     Visibility: public -/
 def assert_not_b0_or_not_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert ((¬ b0) || (¬ b1))
+  massert ((! b0) || (! b1))
   f
 
 /-- [assert_cfg::assert_not_b0_and_b1]:
     Source: 'tests/src/assert-cfg.rs', lines 50:0-53:1
     Visibility: public -/
 def assert_not_b0_and_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert (¬ b0)
+  massert (! b0)
   massert b1
   f
 
@@ -98,15 +98,15 @@ def assert_not_b0_and_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
     Visibility: public -/
 def assert_b0_and_not_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
   massert b0
-  massert (¬ b1)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_not_b0_and_not_b1]:
     Source: 'tests/src/assert-cfg.rs', lines 60:0-63:1
     Visibility: public -/
 def assert_not_b0_and_not_b1 (b0 : Bool) (b1 : Bool) : Result Unit := do
-  massert (¬ b0)
-  massert (¬ b1)
+  massert (! b0)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_or_call]:
@@ -136,9 +136,9 @@ def assert_and_call : Result Unit := do
     Visibility: public -/
 def assert_not_or_call : Result Unit := do
   let b ← get_b0
-  massert (¬ b)
+  massert (! b)
   let b1 ← get_b1
-  massert (¬ b1)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_not_and_call]:
@@ -149,7 +149,7 @@ def assert_not_and_call : Result Unit := do
   if b
   then do
        let b1 ← get_b1
-       massert (¬ b1)
+       massert (! b1)
   else ok ()
   f
 
@@ -174,7 +174,7 @@ def assert_b0_or_not_b1_call : Result Unit := do
   then ok ()
   else do
        let b1 ← get_b1
-       massert (¬ b1)
+       massert (! b1)
   f
 
 /-- [assert_cfg::assert_not_b0_or_not_b1_call]:
@@ -185,7 +185,7 @@ def assert_not_b0_or_not_b1_call : Result Unit := do
   if b
   then do
        let b1 ← get_b1
-       massert (¬ b1)
+       massert (! b1)
   else ok ()
   f
 
@@ -194,7 +194,7 @@ def assert_not_b0_or_not_b1_call : Result Unit := do
     Visibility: public -/
 def assert_not_b0_and_b1_call : Result Unit := do
   let b ← get_b0
-  massert (¬ b)
+  massert (! b)
   let b1 ← get_b1
   massert b1
   f
@@ -206,7 +206,7 @@ def assert_b0_and_not_b1_call : Result Unit := do
   let b ← get_b0
   massert b
   let b1 ← get_b1
-  massert (¬ b1)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_not_b0_and_not_b1_call]:
@@ -214,9 +214,9 @@ def assert_b0_and_not_b1_call : Result Unit := do
     Visibility: public -/
 def assert_not_b0_and_not_b1_call : Result Unit := do
   let b ← get_b0
-  massert (¬ b)
+  massert (! b)
   let b1 ← get_b1
-  massert (¬ b1)
+  massert (! b1)
   f
 
 /-- [assert_cfg::assert_lt]:

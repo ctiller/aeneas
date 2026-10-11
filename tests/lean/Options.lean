@@ -202,7 +202,7 @@ def test_is_some_and_false : Result Unit := do
     core.option.Option.is_some_and
       test_is_some_and_false.closure.Insts.CoreOpsFunctionFnOnceTupleU32Bool
       (some 0#u32) ()
-  massert (¬ b)
+  massert (! b)
 
 /- Unit test for [options::test_is_some_and_false] -/
 #guard (test_is_some_and_false).reducesTo ()
@@ -238,7 +238,7 @@ def test_is_some_and_none : Result Unit := do
     core.option.Option.is_some_and
       test_is_some_and_none.closure.Insts.CoreOpsFunctionFnOnceTupleU32Bool
       none ()
-  massert (¬ b)
+  massert (! b)
 
 /- Unit test for [options::test_is_some_and_none] -/
 #guard (test_is_some_and_none).reducesTo ()

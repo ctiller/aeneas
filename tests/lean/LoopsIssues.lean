@@ -150,7 +150,7 @@ def mut_loop_len_loop.body
   := do
   let s ← lift (Array.to_slice buf)
   let i := Slice.len s
-  massert ((¬ b) || (0#usize <= i))
+  massert ((! b) || (0#usize <= i))
   if b
   then ok (cont ())
   else ok (done ())
